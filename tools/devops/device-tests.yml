@@ -7,7 +7,7 @@ resources:
   - repository: maccore
     type: github
     name: xamarin/maccore
-    ref: refs/heads/master
+    ref: refs/heads/device-tests-yaml
     endpoint: xamarin
 
 steps:
@@ -16,6 +16,9 @@ steps:
 
 - bash: ./xamarin-macios/tools/devops/system-info.sh
   displayName: System Info
+
+- bash: cd xamarin-macios && ./configure --enable-xamarin
+  displayName: Configure
 
 - script: |
    set -x
@@ -34,13 +37,13 @@ steps:
    set -e
 
    CONFIGURE_ARGS="--provision-xcode --provision-xamarin-studio --provision-mono --ignore-osx --ignore-autotools --ignore-cmake"
-   if grep ignore-7z system-dependencies.sh 2>&1 > /dev/null; then
+   if grep ignore-7z xamarin-macios/system-dependencies.sh 2>&1 > /dev/null; then
        CONFIGURE_ARGS="$CONFIGURE_ARGS --provision-7z"
    fi
-   if grep ignore-python3 system-dependencies.sh 2>&1 > /dev/null; then
+   if grep ignore-python3 xamarin-macios/system-dependencies.sh 2>&1 > /dev/null; then
        CONFIGURE_ARGS="$CONFIGURE_ARGS --ignore-python3"
    fi
-   ./system-dependencies.sh $CONFIGURE_ARGS
+   ./xamarin-macios/system-dependencies.sh $CONFIGURE_ARGS
   displayName: 'Provision dependencies'
   timeoutInMinutes: 240
 
