@@ -14,22 +14,17 @@ steps:
 - checkout: self
 - checkout: maccore
 
+- task: InstallSSHKey@0
+  inputs:
+    knownHostsEntry: $(github-hostname)
+    sshPublicKey: $(github-pubkey)
+    sshKeySecureFile: $(github-file)
+
 - bash: ./xamarin-macios/tools/devops/system-info.sh
-  displayName: System Info
-
-- script: |
-   set -x
-   set +e # Don't care about errors here
-
-   pkill -9 mlaunch
-   pkill -9 -f mono.*xharness.exe
-   pkill -9 -f ssh.*rsync.*xamarin-storage
-
-   exit 0
-  displayName: 'Process cleanup'
+  displayName: System info
 
 - bash: cd xamarin-macios && ./configure --enable-xamarin
-  displayName: Configure
+  displayName: 'Enable Xamarin'
 
 - script: |
    set -x
@@ -59,7 +54,7 @@ steps:
   timeoutInMinutes: 240
 
 - task: ms-devlabs.utilitytasks.task-Shellpp.Shell++@0
-  displayName: 'Install XI'
+  displayName: 'Install XI PKG'
   inputs:
     type: InlineScript
     script: |
@@ -127,8 +122,19 @@ steps:
 
   timeoutInMinutes: 15
 
+- script: |
+   set -x
+   set +e # Don't care about errors here
+
+   pkill -9 mlaunch
+   pkill -9 -f mono.*xharness.exe
+   pkill -9 -f ssh.*rsync.*xamarin-storage
+
+   exit 0
+  displayName: 'Process cleanup'
+
 - task: CmdLine@1
-  displayName: 'Do black magic. Recipe: http://stackoverflow.com/a/40039594/183422'
+  displayName: 'Remove security UI-prompt (http://stackoverflow.com/a/40039594/183422)'
   inputs:
     filename: security
     arguments: ' set-key-partition-list -S apple-tool:,apple: -s -k $(OSX_KEYCHAIN_PASS) login.keychain'
@@ -153,7 +159,7 @@ steps:
      sudo launchctl stop com.apple.usbmuxd
 
 - task: ms-devlabs.utilitytasks.task-Shellpp.Shell++@0
-  displayName: 'Print Html Report link'
+  displayName: 'Print HTML report link'
   inputs:
     type: InlineScript
     script: |
@@ -188,7 +194,7 @@ steps:
   displayName: 'Set GitHub status (start)'
   inputs:
     targetType: filePath
-    filePath: './jenkins/vsts-device-tests-set-status.sh'
+    filePath: './xamarin-macios/jenkins/vsts-device-tests-set-status.sh'
     arguments: '--start --token=$(GitHub.Token) --device=iOS'
   continueOnError: true
 
@@ -213,12 +219,12 @@ steps:
    set -x
    set -e
 
-   UNIFY_TOOL=./tools/unit-tests-merge.cs
+   UNIFY_TOOL=./xamarin-macios/tools/unit-tests-merge.cs
    MERGED_XML=tests-grouped-result.xml
 
    if test -f "$UNIFY_TOOL"; then
        echo "Merging NUnit XML results."
-       $UNIFY_TOOL ./jenkins-results
+       $UNIFY_TOOL ./xamarin-macios/jenkins-results
        if test -f "$MERGED_XML";then
            echo "Merging completed."
        else
@@ -234,7 +240,7 @@ steps:
   displayName: 'Set GitHub status (end)'
   inputs:
     targetType: filePath
-    filePath: './jenkins/vsts-device-tests-set-status.sh'
+    filePath: './xamarin-macios/jenkins/vsts-device-tests-set-status.sh'
     arguments: '--token=$(GitHub.Token) --device=iOS'
   continueOnError: true
   condition: always()
@@ -251,7 +257,7 @@ steps:
      X="#vso"
      echo help
 
-     FILE=$PWD/tests/TestSummary.md
+     FILE=$PWD/xamarin-macios/tests/TestSummary.md
      if ! test -f $FILE; then
      echo "# Tests failed catastrophically (no summary found)" > $FILE
      fi
@@ -265,16 +271,16 @@ steps:
   timeoutInMinutes: 1
 
 - task: ArchiveFiles@1
-  displayName: 'Archive Html Report '
+  displayName: 'Archive HtmlReport'
   inputs:
-    rootFolder: 'jenkins-results'
+    rootFolder: 'xamarin-macios/jenkins-results'
     includeRootFolder: false
     archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
   continueOnError: true
   condition: always()
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: HtmlReport'
+  displayName: 'Publish HtmlReport'
   inputs:
     ArtifactName: HtmlReport
   continueOnError: true
@@ -296,7 +302,7 @@ steps:
   condition: always()
 
 - task: PublishTestResults@2
-  displayName: 'Publish Device Test Results'
+  displayName: 'Publish results'
   inputs:
     testResultsFormat: NUnit
     testResultsFiles: 'tests-grouped-result.xml'
