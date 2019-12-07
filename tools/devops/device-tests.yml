@@ -17,6 +17,17 @@ steps:
 - bash: ./xamarin-macios/tools/devops/system-info.sh
   displayName: System Info
 
+- script: |
+   set -x
+   set +e # Don't care about errors here
+
+   pkill -9 mlaunch
+   pkill -9 -f mono.*xharness.exe
+   pkill -9 -f ssh.*rsync.*xamarin-storage
+
+   exit 0
+  displayName: 'Process cleanup'
+
 - bash: cd xamarin-macios && ./configure --enable-xamarin
   displayName: Configure
 
