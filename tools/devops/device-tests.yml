@@ -208,10 +208,10 @@ steps:
    export TESTS_EXTRA_ARGUMENTS="--label=run-ios-tests"
    # export TESTS_PERIODIC_COMMAND="--periodic-interval 10 --periodic-command rsync --periodic-command-arguments '-avz -e \"ssh\" $PWD/jenkins-results builder@xamarin-storage:/volume1/storage/$P'"
 
-   make -C builds download -j || true
-   make -C builds downloads -j || true
-   make -C builds .stamp-mono-ios-sdk-destdir -j || true
-   make -C tests vsts-device-tests
+   make -C xamarin-macios/builds download -j || true
+   make -C xamarin-macios/builds downloads -j || true
+   make -C xamarin-macios/builds .stamp-mono-ios-sdk-destdir -j || true
+   make -C xamarin-macios/tests vsts-device-tests
   displayName: 'Run tests'
   timeoutInMinutes: 4000
 
