@@ -257,12 +257,12 @@ steps:
      X="#vso"
      echo help
 
-     echo "### :construction: Experimental DDFun pipeline"
-
      FILE=$PWD/xamarin-macios/tests/TestSummary.md
      if ! test -f $FILE; then
      echo ":fire: Tests failed catastrophically (no summary found)" > $FILE
      fi
+
+     echo "### :construction: Experimental DDFun pipeline" >> $FILE
 
      echo "#$X[task.addattachment type=Distributedtask.Core.Summary;name=Test results;]$FILE"
 
