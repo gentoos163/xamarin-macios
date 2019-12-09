@@ -204,9 +204,9 @@ steps:
 
    P=$(cat tmp.p)
 
-   ssh builder@xamarin-storage "mkdir -p /volume1/storage/$P"
+   # ssh builder@xamarin-storage "mkdir -p /volume1/storage/$P"
    export TESTS_EXTRA_ARGUMENTS="--label=run-ios-tests"
-   export TESTS_PERIODIC_COMMAND="--periodic-interval 10 --periodic-command rsync --periodic-command-arguments '-avz -e \"ssh\" $PWD/jenkins-results builder@xamarin-storage:/volume1/storage/$P'"
+   # export TESTS_PERIODIC_COMMAND="--periodic-interval 10 --periodic-command rsync --periodic-command-arguments '-avz -e \"ssh\" $PWD/jenkins-results builder@xamarin-storage:/volume1/storage/$P'"
 
    make -C builds download -j || true
    make -C builds downloads -j || true
@@ -288,20 +288,20 @@ steps:
   continueOnError: true
   condition: always()
 
-- task: ms-devlabs.utilitytasks.task-Shellpp.Shell++@0
-  displayName: 'Upload HtmlReport to Boston Storage'
-  inputs:
-    type: InlineScript
-    script: |
-     set -e
-     set -x
+# - task: ms-devlabs.utilitytasks.task-Shellpp.Shell++@0
+#   displayName: 'Upload HtmlReport to Boston Storage'
+#   inputs:
+#     type: InlineScript
+#     script: |
+#      set -e
+#      set -x
 
-     P=$(cat tmp.p)
+#      P=$(cat tmp.p)
 
-     ssh -i ~/.ssh/release-manager-rsa builder@xamarin-storage mkdir -p /volume1/storage/$P
-     rsync -avz -e "ssh -i ~/.ssh/release-manager-rsa" jenkins-results builder@xamarin-storage:/volume1/storage/$P
-  continueOnError: true
-  condition: always()
+#      ssh -i ~/.ssh/release-manager-rsa builder@xamarin-storage mkdir -p /volume1/storage/$P
+#      rsync -avz -e "ssh -i ~/.ssh/release-manager-rsa" jenkins-results builder@xamarin-storage:/volume1/storage/$P
+#   continueOnError: true
+#   condition: always()
 
 - task: PublishTestResults@2
   displayName: 'Publish results'
