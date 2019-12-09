@@ -9,7 +9,7 @@ resources:
 jobs:
 - job: macOS
   displayName: xamarin macios
-  timeoutInMinutes: 420
+  timeoutInMinutes: 1000
 
   pool:
     name: VSEng-Xamarin-Mac-Devices
@@ -18,12 +18,6 @@ jobs:
   steps:
   - checkout: self
   - checkout: maccore
-
-  - task: InstallSSHKey@0
-    inputs:
-      knownHostsEntry: $(github-hostname)
-      sshPublicKey: $(github-pubkey)
-      sshKeySecureFile: $(github-file)
 
   - bash: ./xamarin-macios/tools/devops/system-info.sh
     displayName: System info
@@ -216,7 +210,7 @@ jobs:
      make -C xamarin-macios/builds .stamp-mono-ios-sdk-destdir -j || true
      make -C xamarin-macios/tests vsts-device-tests
     displayName: 'Run tests'
-    timeoutInMinutes: 10
+    timeoutInMinutes: 5
 
   - script: |
      set -x
@@ -267,8 +261,8 @@ jobs:
 
        echo "#$X[task.addattachment type=Distributedtask.Core.Summary;name=Test results;]$FILE"
 
-       echo "[Wrench lane]($WRENCH_URL)" > Wrench.md
-       echo "#$X[task.addattachment type=Distributedtask.Core.Summary;name=Wrench;]$PWD/Wrench.md"
+       echo "[Jenkins build]($WRENCH_URL)" > Wrench.md
+       echo "#$X[task.addattachment type=Distributedtask.Core.Summary;name=Jenkins;]$PWD/Wrench.md"
     continueOnError: true
     condition: always()
     timeoutInMinutes: 1
@@ -281,6 +275,9 @@ jobs:
       archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
     continueOnError: true
     condition: always()
+
+  - publish: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
+    artifact: TestResults
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish HtmlReport'
