@@ -262,8 +262,6 @@ steps:
      echo ":fire: Tests failed catastrophically (no summary found)" > $FILE
      fi
 
-     echo "### :construction: Experimental DDFun pipeline" >> $FILE
-
      echo "#$X[task.addattachment type=Distributedtask.Core.Summary;name=Test results;]$FILE"
 
      echo "[Wrench lane]($WRENCH_URL)" > Wrench.md

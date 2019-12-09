@@ -84,6 +84,9 @@ if test -z "$START"; then
 	printf "%s%s on [Azure DevOps](%s)($DEVICE_TYPE): [Html Report](http://xamarin-storage/%s/jenkins-results/tests/index.html) %s\\n\\n" "$RESULT_EMOJII" "$DESCRIPTION" "$VSTS_BUILD_URL" "$P" "$RESULT_EMOJII" > "$MESSAGE_FILE"
 
 	FILE=$PWD/tests/TestSummary.md
+	if [ $DEVICE_TYPE == "iOS-DDFun" ]; then
+		printf "### :construction: Experimental DDFun pipeline\\n" >> "$MESSAGE_FILE"
+	fi
 	if ! test -f "$FILE"; then
 		printf "🔥 Tests failed catastrophically on $DEVICE_TYPE  (no summary found)\\n" >> "$MESSAGE_FILE"
 	else
