@@ -195,7 +195,7 @@ steps:
   inputs:
     targetType: filePath
     filePath: './xamarin-macios/jenkins/vsts-device-tests-set-status.sh'
-    arguments: '--start --token=$(GitHub.Token) --device=iOS'
+    arguments: '--start --token=$(GitHub.Token) --device=iOS-DDFun'
   continueOnError: true
 
 - script: |
@@ -241,7 +241,7 @@ steps:
   inputs:
     targetType: filePath
     filePath: './xamarin-macios/jenkins/vsts-device-tests-set-status.sh'
-    arguments: '--token=$(GitHub.Token) --device=iOS'
+    arguments: '--token=$(GitHub.Token) --device=iOS-DDFun'
   continueOnError: true
   condition: always()
 
@@ -257,9 +257,11 @@ steps:
      X="#vso"
      echo help
 
+     echo "### :construction: Experimental DDFun pipeline"
+
      FILE=$PWD/xamarin-macios/tests/TestSummary.md
      if ! test -f $FILE; then
-     echo "# Tests failed catastrophically (no summary found)" > $FILE
+     echo ":fire: Tests failed catastrophically (no summary found)" > $FILE
      fi
 
      echo "#$X[task.addattachment type=Distributedtask.Core.Summary;name=Test results;]$FILE"
