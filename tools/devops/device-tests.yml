@@ -214,7 +214,7 @@ jobs:
      make -C xamarin-macios/builds .stamp-mono-ios-sdk-destdir -j || true
      make -C xamarin-macios/tests vsts-device-tests
     displayName: 'Run tests'
-    timeoutInMinutes: 5
+    timeoutInMinutes: 600
 
   - script: |
      set -x
