@@ -220,8 +220,8 @@ jobs:
      set -x
      set -e
 
-     UNIFY_TOOL=./xamarin-macios/tools/unit-tests-merge.cs
-     MERGED_XML=tests-grouped-result.xml
+     UNIFY_TOOL=./xamarin-macios/tools/unit-tests-merge.csharp
+     MERGED_XML=./xamarin-macios/tools/tests-grouped-result.xml
 
      if test -f "$UNIFY_TOOL"; then
          echo "Merging NUnit XML results."
@@ -291,7 +291,7 @@ jobs:
     displayName: 'Publish results'
     inputs:
       testResultsFormat: NUnit
-      testResultsFiles: 'tests-grouped-result.xml'
+      testResultsFiles: './xamarin-macios/tools/tests-grouped-result.xml'
       failTaskOnFailedTests: true
     continueOnError: true
     condition: succeededOrFailed()
