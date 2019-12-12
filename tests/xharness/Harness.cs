@@ -675,7 +675,7 @@ namespace xharness
 
 		public bool InWrench {
 			get {
-				return true;
+				return false;
 			}
 		}
 		
