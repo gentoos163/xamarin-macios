@@ -675,8 +675,7 @@ namespace xharness
 
 		public bool InWrench {
 			get {
-				var buildRev = Environment.GetEnvironmentVariable ("BUILD_REVISION");
-				return !string.IsNullOrEmpty (buildRev) && buildRev != "jenkins";
+				return true;
 			}
 		}
 		
@@ -688,8 +687,7 @@ namespace xharness
 		
 		public bool InCI {
 			get {
-				// We use the 'BUILD_REVISION' variable to detect whether we're running CI or not.
-				return !string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("BUILD_REVISION"));
+				return true;
 			}
 		}
 
