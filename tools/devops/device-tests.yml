@@ -214,7 +214,7 @@ jobs:
      make -C xamarin-macios/builds .stamp-mono-ios-sdk-destdir -j || true
      make -C xamarin-macios/tests vsts-device-tests
     displayName: 'Run tests'
-    timeoutInMinutes: 600
+    timeoutInMinutes: 5
 
   - script: |
      set -x
@@ -244,7 +244,7 @@ jobs:
       filePath: './xamarin-macios/jenkins/vsts-device-tests-set-status.sh'
       arguments: '--token=$(GitHub.Token) --device=iOS-DDFun'
     continueOnError: true
-    condition: always()
+    condition: succeededOrFailed()
 
   - task: ms-devlabs.utilitytasks.task-Shellpp.Shell++@0
     displayName: 'Add summaries'
@@ -268,7 +268,7 @@ jobs:
        echo "[Jenkins build]($WRENCH_URL)" > Wrench.md
        echo "#$X[task.addattachment type=Distributedtask.Core.Summary;name=Jenkins;]$PWD/Wrench.md"
     continueOnError: true
-    condition: always()
+    condition: succeededOrFailed()
     timeoutInMinutes: 1
 
   - task: ArchiveFiles@1
@@ -278,14 +278,14 @@ jobs:
       includeRootFolder: false
       archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
     continueOnError: true
-    condition: always()
+    condition: succeededOrFailed()
 
   - task: PublishPipelineArtifact@1
     inputs:
       path: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
       artifact: TestResults
     continueOnError: true
-    condition: always()
+    condition: succeededOrFailed()
 
   - task: PublishTestResults@2
     displayName: 'Publish results'

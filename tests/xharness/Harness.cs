@@ -676,7 +676,7 @@ namespace xharness
 		public bool InWrench {
 			get {
 				var buildRev = Environment.GetEnvironmentVariable ("BUILD_REVISION");
-				return !string.IsNullOrEmpty (buildRev) && buildRev != "jenkins";
+				return !string.IsNullOrEmpty (buildRev) && buildRev == "jenkins";
 			}
 		}
 		
