@@ -271,19 +271,27 @@ jobs:
     condition: succeededOrFailed()
     timeoutInMinutes: 1
 
-  - task: ArchiveFiles@1
-    displayName: 'Archive HtmlReport'
-    inputs:
-      rootFolder: 'xamarin-macios/jenkins-results'
-      includeRootFolder: false
-      archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
-    continueOnError: true
-    condition: succeededOrFailed()
+  # - task: ArchiveFiles@1
+  #   displayName: 'Archive HtmlReport'
+  #   inputs:
+  #     rootFolder: 'xamarin-macios/jenkins-results'
+  #     includeRootFolder: false
+  #     archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
+  #   continueOnError: true
+  #   condition: succeededOrFailed()
 
-  - task: PublishPipelineArtifact@1
+  # - task: PublishPipelineArtifact@1
+  #   inputs:
+  #     path: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
+  #     artifact: TestResults
+  #   continueOnError: true
+  #   condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: HtmlReport'
     inputs:
-      path: '$(Build.ArtifactStagingDirectory)/HtmlReport-$(Build.BuildId).zip'
-      artifact: TestResults
+      pathtoPublish: 'xamarin-macios/jenkins-results'
+      artifactName: HtmlReport
     continueOnError: true
     condition: succeededOrFailed()
 
